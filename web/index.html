@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Enigma · Cipher machine</title><link rel="stylesheet" href="./style.css"><script src="./settings-url.js" defer></script><script src="./enigma-engine.js" defer></script><script src="./app.js" defer></script></head>
+<body>
+<header><div class="brand">E <span>ENIGMA LAB</span></div><nav><a href="./" aria-current="page">Enigma</a> · <a href="./bombe.html">Bombe →</a></nav></header>
+<main>
+<section class="intro"><div><p class="eyebrow">MECHANICS OF A SECRET</p><h1>Every key changes<br>the cipher.</h1><p class="lede">Set the wheels. Connect the letters. Press a key and follow the current through an Enigma machine.</p></div><aside><span class="tag" id="model-tag">M3 · THREE ROTORS</span><p>One key. One illuminated letter.<br>The same settings encrypt and decrypt.</p><a href="#guide">How to operate ↗</a></aside></section>
+<div class="workspace">
+<section class="machine" aria-label="Enigma machine">
+<div class="machine-top"><span>ENIGMA</span><small>WALZEN · LAMPEN · TASTEN</small></div>
+<div class="rotor-heading"><span>01 / ROTOR WINDOWS</span><small>Reflector ← left to right → keyboard</small></div>
+<div id="windows" class="windows" aria-label="Current rotor windows"></div>
+<div class="panel-label"><span>02 / LAMP BOARD</span><span id="lamp-status" role="status">READY</span></div>
+<div id="lamps" class="letter-board lamps" aria-label="Output lamp board"></div>
+<div class="divider"></div>
+<div class="panel-label"><span>03 / KEYBOARD</span><small>A–Z · Backspace to undo</small></div>
+<div id="keyboard" class="letter-board keyboard" aria-label="Machine keyboard"></div>
+<div class="machine-foot"><span>STECKERBRETT</span><span id="cable-count">0 CABLES CONNECTED</span></div>
+<div id="plugs" class="plug-board" aria-label="Plugboard sockets"></div>
+<p class="plug-hint" id="plug-hint">Select two sockets to connect a cable. Select a connected socket to remove it.</p>
+</section>
+<aside class="settings">
+<div class="section-title"><h2>Machine setup</h2><button id="share-settings" class="text-button" type="button">Copy share link</button></div>
+<input id="share-url" type="text" readonly hidden aria-label="Share link to copy">
+<label for="preset">Configuration</label><select id="preset"><option value="M3">M3 · 3 rotors</option><option value="M4">M4 · 4 rotors</option><option value="custom">Custom · any rotor count</option></select>
+<p class="setting-note" id="preset-note">Historical service configuration. Three moving rotors.</p>
+<label for="reflector">Reflector / Umkehrwalze</label><select id="reflector"></select>
+<div class="rotor-settings-heading"><h3>Rotor stack</h3><button id="add-rotor" class="text-button" type="button">+ Add rotor</button></div>
+<p class="setting-note">Left → right. Ring 01 = A. Window is the starting letter.</p>
+<div id="rotor-settings"></div>
+<button id="reset" class="primary-button" type="button">↺ Reset to starting positions</button>
+<p class="setting-note">Reset before decoding a message. Setup changes begin a fresh transcript.</p>
+<div class="trace-heading"><h3>Electrical path</h3><span>LAST KEYPRESS</span></div><div id="trace" class="trace"><p>Press a key to see its journey.</p></div>
+</aside>
+</div>
+<div id="error" class="error" role="alert" hidden></div>
+<section class="transcript"><div class="section-title"><h2>Operator’s transcript</h2><div><button id="copy" class="text-button" type="button">Copy output</button><button id="clear" class="text-button" type="button">Clear paper</button></div></div><div class="paper-grid"><div><span class="eyebrow">KEYS PRESSED</span><p id="input-paper" class="paper">—</p></div><div><span class="eyebrow">LAMPS RECORDED</span><p id="output-paper" class="paper output">—</p></div></div><div class="batch"><label for="message">Message input</label><textarea id="message" rows="2" placeholder="Or enter a message here…"></textarea><button id="encode" class="primary-button" type="button">Send through machine →</button><small>Message input converts a–z to A–Z and discards spaces, numbers, and punctuation. Only letters advance the wheels.</small></div></section>
+<section id="guide" class="guide"><div><p class="eyebrow">THE OPERATOR’S NOTES</p><h2>A circuit that never<br>stands still.</h2></div><div><h3>01. Set the daily key</h3><p>Choose the rotor order, ring settings, reflector, starting windows, and plugboard pairs. Both operators need exactly the same settings.</p><h3>02. Press and hold a letter</h3><p>The wheels step before the current passes through the plugboard, rotors, and reflector, then returns to light one lamp. Release the key to extinguish it. The original machine did not print; the transcript here records the lamps for you.</p><h3>03. Reset to read the reply</h3><p>Return to the original starting windows, then type the ciphertext. The same circuit recovers the plaintext. There is no separate decrypt mode.</p><p class="history">Service machines used three rotors, or four in the naval M4. The M4’s leftmost Beta or Gamma wheel stays stationary. Custom stacks extend the pawl stepping rules to any positive rotor count; repeated types and other combinations are experimental.</p><p class="sources">References: <a href="https://www.cryptomuseum.com/crypto/enigma/working.htm">Crypto Museum</a> · <a href="https://enigmamuseum.com/rotwirg.htm">Enigma Museum rotor wiring</a></p></div></section>
+</main><footer><span>ENIGMA LAB</span><span>JAVASCRIPT ENGINE / HISTORICAL MECHANICS / EXPERIMENTAL POSSIBILITIES</span></footer>
+</body></html>

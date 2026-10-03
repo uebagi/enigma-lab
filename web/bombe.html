@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bombe · Enigma Lab</title><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./bombe.css"><script src="./settings-url.js" defer></script><script src="./enigma-engine.js" defer></script><script src="./bombe-client.js" defer></script><script src="./bombe.js" defer></script></head>
+<body>
+<header><div class="brand">B <span>ENIGMA LAB</span></div><nav><a href="./">← Enigma</a> · <a href="./bombe.html" aria-current="page">Bombe</a></nav></header>
+<main>
+<section class="intro"><div><p class="eyebrow">THE OTHER SIDE OF THE CIPHER</p><h1>A guess becomes<br>a chain of evidence.</h1><p class="lede">Align a crib with intercepted ciphertext. Wire its letter relationships into a menu. Search for settings that survive the contradictions.</p></div><aside><span class="tag">BOMBE · CRIB SEARCH</span><p>Three moving rotors. 17,576 starting windows per order.<br>Unknown plugboard connections can be inferred.</p></aside></section>
+<div class="bombe-layout">
+<section class="bombe-console">
+<div class="bombe-title"><span>BOMBE</span><span id="run-state" role="status">AWAITING MENU</span></div>
+<div id="drum-bank" class="drum-bank" aria-label="Illustrative scrambler drum bank"></div>
+<div class="bank-caption"><span>MENU SCRAMBLERS · ILLUSTRATIVE BANK</span><span id="current-position">— / — — —</span></div>
+<div class="bombe-stats"><div><span>SETTINGS TESTED</span><strong id="tested">0</strong></div><div><span>CONTRADICTIONS</span><strong id="rejected">0</strong></div><div><span>CANDIDATE STOPS</span><strong id="stops">0</strong></div></div>
+<progress id="progress" value="0" max="17576" aria-label="Search progress"></progress>
+<div class="bank-caption"><span id="progress-label">0 / 17,576 positions</span><span>Elapsed <span id="elapsed">0.0 s</span></span></div>
+<div class="bank-caption simulation-clock"><span>SIMULATED TIME</span><span id="simulated-time">00:00.0</span></div>
+<p id="search-status" class="search-status" role="status">Prepare the intercept and crib below, or load the example.</p>
+<div class="menu-title"><h2>The menu</h2><span>LETTERS ARE NODES · POSITIONS ARE LINKS</span></div>
+<svg id="menu" viewBox="0 0 620 330" role="img" aria-label="Crib and ciphertext letter relationship graph"></svg>
+<p class="console-note">The bank illustrates menu scramblers; its motion is not a reconstruction of the original gearing. The graph shows the actual letter links used by the solver.</p>
+</section>
+<aside class="settings search-settings">
+<div class="section-title"><h2>Search setup</h2><button type="button" id="demo" class="text-button">Load example</button></div>
+<button id="share-settings" class="text-button" type="button">Copy share link</button><input id="share-url" type="text" readonly hidden aria-label="Share link to copy">
+<label for="ciphertext">Intercepted ciphertext</label><textarea id="ciphertext" rows="4" spellcheck="false" placeholder="Paste encrypted letters…"></textarea>
+<label for="crib">Crib / guessed plaintext</label><textarea id="crib" rows="2" spellcheck="false" placeholder="A phrase you expect in the message…"></textarea>
+<p class="setting-note">ASCII letters only after normalization. Ciphertext: 6–500 letters. Crib: 6–64 letters; longer cribs usually reject more settings.</p>
+<label for="offset">Crib offset (0 = first letter)</label><div class="offset-control"><button id="offset-left" type="button" aria-label="Move crib one letter left">←</button><input id="offset" type="number" min="0" value="0"><button id="offset-right" type="button" aria-label="Move crib one letter right">→</button></div>
+<div class="rotor-settings-heading"><h3>Rotor assumptions</h3></div>
+<div class="bombe-rotors"><label>Left<select id="rotor-0"></select><input id="ring-0" type="number" value="1" min="1" max="26" aria-label="Left ring setting"></label><label>Middle<select id="rotor-1"></select><input id="ring-1" type="number" value="1" min="1" max="26" aria-label="Middle ring setting"></label><label>Right<select id="rotor-2"></select><input id="ring-2" type="number" value="1" min="1" max="26" aria-label="Right ring setting"></label></div>
+<label class="checkbox-label"><input type="checkbox" id="permute"> Search all 6 orders of these rotors</label>
+<p class="setting-note">Rings (1–26) stay fixed by slot when orders change.</p>
+<label for="bombe-reflector">Reflector</label><select id="bombe-reflector"><option>B</option><option>C</option><option>A</option></select>
+<label for="plug-mode">Plugboard knowledge</label><select id="plug-mode"><option value="unknown">Infer unknown cables from the menu</option><option value="known">Use a fixed, known plugboard</option></select>
+<div id="unknown-controls"><label for="max-pairs">Maximum inferred cables</label><input id="max-pairs" type="number" value="10" min="0" max="13"></div>
+<div id="known-controls" hidden><label for="known-plugs">Known cable pairs (blank = none)</label><input id="known-plugs" type="text" placeholder="AZ BY CX" autocomplete="off"></div>
+<label for="timing-mode">Timing</label><select id="timing-mode"><option value="instant">Instant · run as fast as possible</option><option value="simulated">Simulated · pace the drum search</option></select>
+<label for="simulation-rate">Simulated settings per second</label><input id="simulation-rate" type="number" value="300" min="1" max="100000" step="1">
+<p id="timing-note" class="setting-note">Illustrative pace. Instant mode advances the simulated clock without waiting.</p>
+<div class="search-buttons"><button id="start-search" type="button" class="primary-button">Run Bombe →</button><button id="cancel-search" type="button" class="primary-button" disabled>Stop</button></div>
+<p class="setting-note">Searches all starting windows for these assumptions. It does not search ring settings, crib offsets, M4, or other rotor sets automatically.</p>
+</aside>
+</div>
+<div id="bombe-error" class="error" role="alert" hidden></div>
+<section class="alignment-panel"><div class="section-title"><h2>Crib alignment</h2><span id="alignment-status" class="tag">ENTER A CRIB</span></div><div id="alignment" class="alignment" aria-label="Aligned ciphertext and crib"></div><p class="setting-note">A letter cannot encrypt to itself. Red pairs rule out this entire alignment before the drums run.</p></section>
+<section class="candidate-panel"><div class="section-title"><h2>Candidate stops</h2><span class="eyebrow">CHECK THE WHOLE MESSAGE</span></div><p id="candidate-note" class="setting-note">A stop is a setting consistent with the crib, not proof that the message is correct.</p><div id="candidates"><p class="empty-results">Surviving settings will appear here.</p></div></section>
+<section class="guide"><div><p class="eyebrow">WHY THE MENU MATTERS</p><h2>Contradictions<br>close the circuit.</h2></div><div><h3>01. A crib creates links</h3><p>Each aligned plaintext and ciphertext letter becomes a link through an Enigma scrambler at that message position. Repeated letters and loops connect these links into a menu.</p><h3>02. Reciprocal cables propagate</h3><p>If the plugboard connects A to B, it must also connect B to A. A proposed connection propagates through the menu. If a letter is forced to have two partners, that branch is rejected.</p><h3>03. A stop needs checking</h3><p>This educational solver searches real Enigma windows and propagates reciprocal plugboard constraints. It uses bounded backtracking rather than reconstructing every electrical relay of a historical Bombe. It returns one compatible wiring per surviving window setting; unconstrained letters are left unplugged. Other wirings can exist.</p><p>Hard branches exceeding 2,000 solver nodes are reported as unresolved, not rejected. Results stop at 100 candidates. A completed scan with unresolved settings is not an exhaustive proof of failure.</p><p class="sources">Historical references: <a href="https://www.tnmoc.org/bh-10-bombe-description">The National Museum of Computing</a> · <a href="https://cryptocellar.org/shaylor/bombe.html">Enigma and the Turing Bombe</a></p></div></section>
+</main><footer><span>ENIGMA LAB / BOMBE</span><span>CRIBS · MENUS · CONTRADICTIONS · STOPS</span></footer>
+</body></html>
